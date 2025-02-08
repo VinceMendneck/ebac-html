@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil GitHub</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img class="profile-avatar" id="avatar" src="https://placehold.co/180" alt=".">
+            <h1 class="profile-name" id="name"></h1>
+            <h2 class="profile-username" id="username"></h2>
+            <ul class="numbers">
+                <li class="numbers-item">
+                    <h4>Repositórios</h4>
+                    <span id="rep"></span>
+                </li>
+                <li class="numbers-item">
+                    <h4>Seguidores</h4>
+                    <span id="followers"></span>
+                </li>
+                <li class="numbers-item">
+                    <h4>Seguindo</h4>
+                    <span id="following"></span>
+                </li>
+            </ul>
+            <a href="#" id="link" class="profile-link">Ver no Github</a>
+        </div>
+    </header>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let githubUsername;
+
+            // Solicita o nome de usuário do GitHub ao usuário
+            githubUsername = prompt("Por favor, insira seu nome de usuário do GitHub:");
+
+            if (githubUsername) {
+                // Remove o @ do começo do username, se existir
+                githubUsername = githubUsername.replace(/^@/, '');
+                
+                $.ajax({
+                    url: `https://api.github.com/users/${githubUsername}`,
+                    method: 'GET',
+                    success: function(data) {
+                        $('#name').text(data.name || '');
+                        $('#username').text(data.login);
+                        
+                        // Atualiza o título da página
+                        document.title = `GitHub de ${data.login}`;
+                        
+                        
+                        $('#avatar').attr('src', data.avatar_url);
+                        $('#rep').text(data.public_repos);
+                        $('#following').text(data.following);
+                        $('#followers').text(data.followers);
+                        $('#link').attr('href', data.html_url);
+                    },
+                    error: function() {
+                        alert('Usuário não encontrado ou erro na requisição. Verifique se o nome de usuário está correto.');
+                    }
+                });
+            } else {
+                alert('Você deve inserir um nome de usuário do GitHub para continuar.');
+            }
+        });
+    </script>
+</body>
+</html>
